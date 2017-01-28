@@ -1,0 +1,4 @@
+Multi-language jQuery Date Range Picker Plugin
+http://www.jqueryscript.net/time-clock/Multi-language-jQuery-Date-Range-Picker-Plugin.html
+
+http://multidatespickr.sourceforge.net/#simple-select-days-range-demo
