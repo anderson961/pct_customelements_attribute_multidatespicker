@@ -12,8 +12,7 @@ $GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/css/st
 ?>
 
 <div id="<?= $this->cssID; ?>" class="multirangepicker<?php if($this->class):?><?= $this->class; ?><?php endif; ?>">
-<input type="hidden" name="<?= $this->name; ?>" id="ctrl_<?= $this->cssID; ?>" value="<?= $this->value; ?>">
-	
+<input type="hidden" name="<?= $this->name; ?>" id="ctrl_<?= $this->cssID; ?>" value="<?= $this->value; ?>">	
 </div>
 
 <script type='text/javascript'>

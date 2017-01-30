@@ -40,5 +40,5 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'be_widget_multidatespicker'	=> 'system/modules/pct_customelements_attribute_multidatespicker/templates/backend',	
+	'be_widget_multidatespicker'	=> 'system/modules/pct_customelements_attribute_multidatespicker/templates',	
 ));
