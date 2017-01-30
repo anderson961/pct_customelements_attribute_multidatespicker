@@ -42,7 +42,11 @@ if($objDcaHelper->getActiveRecord()->type == $strType)
 	#
 	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['attr_id']['options_values'] = array('multidatespicker','simpleColumn');
 	#$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['template']['default'] = 'customcatalog_filter_tags';
+	
+	// defaultValue
+	$GLOBALS['TL_DCA'][$objDcaHelper->getTable()]['fields']['defaultValue']['eval'] = array('rgxp'=>'date', 'datepicker'=>true, 'tl_class'=>'w50 wizard'); 
 
+	// mode
 	$GLOBALS['TL_DCA'][$objDcaHelper->getTable()]['fields']['mode']['label'] = $GLOBALS['TL_LANG']['tl_pct_customelement_filter']['multidatespicker_mode'];
 	$GLOBALS['TL_DCA'][$objDcaHelper->getTable()]['fields']['mode']['inputType'] = 'select';
 	$GLOBALS['TL_DCA'][$objDcaHelper->getTable()]['fields']['mode']['options'] = array('add','sub');

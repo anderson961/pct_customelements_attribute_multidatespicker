@@ -42,15 +42,11 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 		// fetch the attribute the filter works on
 		$this->objAttribute = \PCT\CustomElements\Core\AttributeFactory::findById($this->get('attr_id'));
 
-		// point the filter to the attribute or use the urlparameter
-		$name = $this->get('urlparam') ? $this->get('urlparam') : $this->objAttribute->alias;
-		$target = $this->objAttribute->alias;
-
 		// set the filter name
-		$this->setName($name);
+		$this->setName( $this->get('urlparam') ? $this->get('urlparam') : $this->objAttribute->alias );
 
 		// point the filter to the attribute
-		$this->setFilterTarget($target);
+		$this->setFilterTarget( $this->objAttribute->alias );
 	}
 	
 	
@@ -62,40 +58,27 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 	 */	
 	public function getQueryOptionCallback()
 	{
-		$value = implode('',$this->getValue());
+		$varValue = implode('',$this->getValue());
 		
 		if(strlen($this->get('defaultValue') > 0))
 		{
-			$value = $this->get('defaultValue');
+			$varValue = $this->get('defaultValue');
 		}
 		
-		throw new \Exception('--- STOP ---');
-		
-		$value = $this->getUnix($value);
-		
-		if(empty($value))
+		// if no filter value is set use current timestamp (today) as value
+		if(empty($varValue))
 		{
-			return array();
-		}
-
-		$t = $this->getFilterTarget();
-		
-		// compare to current time if no target has been set
-		if(strlen($t) < 1)
-		{
-			$t = time();	
+			$objDate = new \Date();
+			$varValue = $objDate->__get('dayBegin');
 		}
 		
-		$where = '';
-		switch($this->get('mode'))
-		{
-		
-		}
+		$intToday = $varValue;
+		$strTarget = $this->getFilterTarget();
 		
 		$options = array
 		(
-		#	'column'	=> $t,
-		#	'where'		=> '('.$where . ($this->bolAllowEmpty ? ' OR '.$t."='' " : '').')',
+			'column'	=> $strTarget,
+			'where'		=> ($this->get('mode') == 'sub' ? ' NOT ' : '').'FIND_IN_SET('.$intToday.','.$strTarget.')',
 		);
 		
 		return $options;
