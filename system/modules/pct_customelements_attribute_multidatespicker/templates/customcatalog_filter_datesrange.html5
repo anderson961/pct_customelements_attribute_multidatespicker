@@ -1,7 +1,6 @@
 
 <?php // include jquery, jquery ui
 global $objPage;
-global $objPage;
 if(!$objPage->hasJQuery)
 {
 	$GLOBALS['TL_JAVASCRIPT'][] = 'https://code.jquery.com/jquery-1.12.4.js';
@@ -13,7 +12,6 @@ $GLOBALS['TL_CSS'][] = '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css';
 <div <?= $this->cssID; ?> class="widget <?= $this->class; ?> block">
 <fieldset class="date_range_container">
 	<?php if($this->label): ?><legend><?= $this->label; ?></legend><?php endif; ?>
-	
 	<!-- date start -->
 	<label for="<?= $this->name; ?>_start"><?= $this->label_start; ?></label>
 	<input id="ctrl_<?= $this->name; ?>_start_<?= $this->id; ?>" type="text" name="<?= $this->name; ?>_start" class="text start datepicker <?= $this->name; ?>" value="<?= $this->value_start; ?>">
@@ -26,6 +24,10 @@ $GLOBALS['TL_CSS'][] = '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css';
 
 <script type='text/javascript'>
 /* <![CDATA[ */
+
+/**
+ * Load datepicker for input fields
+ */
 jQuery(document).ready(function(){ 
 	jQuery('input.datepicker.<?= $this->name; ?>').datepicker(
 	{
