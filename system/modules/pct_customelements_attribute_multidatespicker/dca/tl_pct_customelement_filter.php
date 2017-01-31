@@ -34,14 +34,14 @@ $GLOBALS['TL_DCA']['tl_pct_customelement_filter']['palettes'][$strType] = $objDc
 
 if($objDcaHelper->getActiveRecord()->type == $strType)
 {
-	#if(\Input::get('act') == 'edit' && \Input::get('table') == $objDcaHelper->getTable())
-	#{
-	#	// Show template info
-	#	\Message::addInfo(sprintf($GLOBALS['TL_LANG']['PCT_CUSTOMCATALOG']['MSC']['templateInfo_filter'], 'customcatalog_filter_tags'));
-	#}
+	if(\Input::get('act') == 'edit' && \Input::get('table') == $objDcaHelper->getTable())
+	{
+	   // Show template info
+	   \Message::addInfo(sprintf($GLOBALS['TL_LANG']['PCT_CUSTOMCATALOG']['MSC']['templateInfo_filter'], 'customcatalog_filter_daterange'));
+	}
 	#
 	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['attr_id']['options_values'] = array('multidatespicker','simpleColumn');
-	#$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['template']['default'] = 'customcatalog_filter_tags';
+	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['template']['default'] = 'customcatalog_filter_daterange';
 	
 	// defaultValue
 	$GLOBALS['TL_DCA'][$objDcaHelper->getTable()]['fields']['defaultValue']['eval'] = array('rgxp'=>'date', 'datepicker'=>true, 'tl_class'=>'w50 wizard'); 

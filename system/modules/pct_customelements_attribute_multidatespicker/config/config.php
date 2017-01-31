@@ -42,10 +42,13 @@ $GLOBALS['PCT_CUSTOMELEMENTS']['ATTRIBUTES']['multidatespicker'] = array
  */
 $GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS']['multidatespicker'] = array
 (
-	'label'		=> &$GLOBALS['TL_LANG']['PCT_CUSTOMELEMENTS']['FILTERS']['multidatespicker'],
-	'path' 		=> PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH,
-	'class'		=> 'PCT\CustomElements\Filters\MultiDatesPicker',
-	'icon'		=> 'fa fa-calendar',
+	'label'				=> &$GLOBALS['TL_LANG']['PCT_CUSTOMELEMENTS']['FILTERS']['multidatespicker'],
+	'path' 				=> PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH,
+	'class'				=> 'PCT\CustomElements\Filters\MultiDatesPicker',
+	'icon'				=> 'fa fa-calendar',
+	'dateFormat'		=> 'd-m-Y', // date format in php
+	'js_dateFormat'		=> 'dd-mm-yy',	// date format the datepicker uses. It must match the php date format
+	'futureDate'		=> '+3 month' // added to start day when no end day is set
 );
 
 

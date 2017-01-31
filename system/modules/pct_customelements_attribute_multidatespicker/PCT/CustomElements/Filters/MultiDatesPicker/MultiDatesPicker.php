@@ -50,7 +50,7 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 	}
 	
 	
-		/**
+	/**
 	 * Prepare the sql query array for this filter and return it as array
 	 * @return array
 	 * 
@@ -58,29 +58,117 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 	 */	
 	public function getQueryOptionCallback()
 	{
-		$varValue = implode('',$this->getValue());
+		$blnAutoMode = true;
+		$arrOptions = array();
 		
-		if(strlen($this->get('defaultValue') > 0))
+		// if user filters manually
+		$arrRange = array();
+		if(count($this->getValue($this->getName().'_start')) > 0 || count($this->getValue($this->getName().'_stop')) > 0)
 		{
-			$varValue = $this->get('defaultValue');
+			$arrRange = array_filter(array_merge($this->getValue($this->getName().'_start'), $this->getValue($this->getName().'_stop')));
+			$blnAutoMode = false;
 		}
 		
-		// if no filter value is set use current timestamp (today) as value
-		if(empty($varValue))
+		if($blnAutoMode === true)
 		{
-			$objDate = new \Date();
-			$varValue = $objDate->__get('dayBegin');
+			$varValue = implode('',$this->getValue());
+			
+			if(strlen($this->get('defaultValue')) > 0)
+			{
+				$varValue = $this->get('defaultValue');
+			}
+			
+			// if no filter value is set use current timestamp (today) as value
+			if(empty($varValue))
+			{
+				$objDate = new \Date();
+				$varValue = $objDate->__get('dayBegin');
+			}
+			
+			$intToday = $varValue;
+			$strTarget = $this->getFilterTarget();
+			
+			// build sql query array
+			$arrOptions = array
+			(
+				'column'	=> $strTarget,
+				'where'		=> ($this->get('mode') == 'sub' ? ' NOT ' : '').'FIND_IN_SET('.$intToday.','.$strTarget.')',
+			);
+		}
+		else
+		{
+			$strFormat = $GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS'][$objFilter->type]['dateFormat'] ?: 'd-m-Y';
+			
+			// create Date objects
+			// @var object \Date
+			$objDateStart = new \Date($arrRange[0],$strFormat);
+			$objDateStop = new \Date($arrRange[1],$strFormat);
+			
+			$intStart = $objDateStart->__get('dayBegin');
+			$intStop = $objDateStop->__get('dayEnd');
+		
+			// use default value as date start if not set
+			if(strlen($arrRange[0]) < 1 && strlen($this->get('defaultValue')) > 0)
+			{
+				$intStart = $this->get('defaultValue');		
+			}
+		
+			if(strlen($arrRange[1]) < 1)
+			{
+				$strFuture = $GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS'][$objFilter->type]['futureDate'] ?: '+3 month';
+				$intStop = date('U', strtotime($strFuture,$objDateStart->__get('tstamp')));
+			}
+			
+			// @var object DateTime
+			$objDateTimeStart = \DateTime::createFromFormat('U', $intStart);
+			$objDateTimeStop = \DateTime::createFromFormat('U', $intStop);
+			
+			// @var object DatePeriod
+			$objPeriod = new \DatePeriod($objDateTimeStart, new \DateInterval('P1D'), $objDateTimeStop);
+			
+			// collect all days in the period as timestamps
+			$arrDates = array();
+			foreach($objPeriod as $date)
+			{
+				$objDate = new \Date($date->format('U'));
+				$arrDates[] = $objDate->__get('dayBegin');
+			}
+			
+			// build sql query array
+			$arrOptions = array
+			(
+				'column' => $strTarget,
+				'where'  => $strTarget.($this->get('mode') == 'sub' ? ' NOT ' : '').' IN ('.implode(',',$arrDates).')', 
+			);
 		}
 		
-		$intToday = $varValue;
-		$strTarget = $this->getFilterTarget();
+		return $arrOptions;
+	}
+	
+	
+	/**
+	 * Render the filter and return string
+	 * @param string	Name of the filter
+	 * @param array		Active filter values
+	 * @param object	Template object
+	 * @param object	The current filter object
+	 * @return string
+	 */
+	public function renderCallback($strName,$varValue,$objTemplate,$objFilter)
+	{
+		$objTemplate->name = $strName;
+		$objTemplate->label = $this->get('label') ?:  $this->get('title');
+		$objTemplate->value = $varValue;
 		
-		$options = array
-		(
-			'column'	=> $strTarget,
-			'where'		=> ($this->get('mode') == 'sub' ? ' NOT ' : '').'FIND_IN_SET('.$intToday.','.$strTarget.')',
-		);
+		// start
+		$objTemplate->value_start = implode('',$this->getValue($strName.'_start'));
+		// stop
+		$objTemplate->value_stop = implode('',$this->getValue($strName.'_stop'));
 		
-		return $options;
+		// date formats
+		$objTemplate->js_dateFormat = $GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS'][$objFilter->type]['js_dateFormat'] ?: 'dd-mm-yy';
+		$objTemplate->php_dateFormat = $GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS'][$objFilter->type]['dateFormat'] ?: 'd-m-Y';
+		
+		return $objTemplate->parse();
 	}
 }

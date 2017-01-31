@@ -1,0 +1,42 @@
+
+<?php // include jquery, jquery ui
+global $objPage;
+global $objPage;
+if(!$objPage->hasJQuery)
+{
+	$GLOBALS['TL_JAVASCRIPT'][] = 'https://code.jquery.com/jquery-1.12.4.js';
+}
+$GLOBALS['TL_JAVASCRIPT'][] = 'https://code.jquery.com/ui/1.12.1/jquery-ui.js';
+$GLOBALS['TL_CSS'][] = '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css';	
+?>
+
+<div <?= $this->cssID; ?> class="widget <?= $this->class; ?> block">
+<fieldset class="date_range_container">
+	<?php if($this->label): ?><legend><?= $this->label; ?></legend><?php endif; ?>
+	
+	<!-- date start -->
+	<label for="<?= $this->name; ?>_start"><?= $this->label_start; ?></label>
+	<input id="ctrl_<?= $this->name; ?>_start_<?= $this->id; ?>" type="text" name="<?= $this->name; ?>_start" class="text start datepicker <?= $this->name; ?>" value="<?= $this->value_start; ?>">
+	
+	<!-- date stop -->
+	<label for="<?= $this->name; ?>_stop"><?= $this->label_stop; ?></label>
+	<input id="ctrl_date<?= $this->name; ?>_stop_<?= $this->id; ?>" type="text" name="<?= $this->name; ?>_stop" class="text stop datepicker <?= $this->name; ?>" value="<?= $this->value_stop; ?>">
+</fieldset>
+<?php if($this->description): ?><div class="description"><?php echo $this->description; ?></div><?php endif; ?>
+
+<script type='text/javascript'>
+/* <![CDATA[ */
+jQuery(document).ready(function(){ 
+	jQuery('input.datepicker.<?= $this->name; ?>').datepicker(
+	{
+		dateFormat: "<?= $this->js_dateFormat; ?>",
+		onSelect: function(dateText,objInstance) 
+		{
+			jQuery('#'+objInstance.id).attr('value',dateText);
+		}
+	});
+});
+/* ]]> */
+</script>
+
+</div>

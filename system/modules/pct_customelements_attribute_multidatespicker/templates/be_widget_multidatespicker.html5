@@ -21,6 +21,7 @@ $GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/css/st
 /**
  * Initialize the MultiDatesPicker script
  * http://multidatespickr.sourceforge.net/
+ * https://jqueryui.com/datepicker/
  */
 jQuery(document).ready(function() 
 {
@@ -36,6 +37,9 @@ jQuery(document).ready(function()
 		<?php endif; ?>
 		numberOfMonths: [1,3], // rows, columns
 		yearRange: "2016:2025",
+		showButtonPanel: true,
+		//showOtherMonths: true,
+		//selectOtherMonths: true,
 		onSelect: function(dateText, objInstance) 
 		{
 			var elementClicked = null;
@@ -77,15 +81,12 @@ jQuery(document).ready(function()
 			}
 			
 			input.val(value);
-		}
-	});
-//	
-//	jQuery('#<?= $this->cssID; ?>').find('a').bind('click',function(event)
-//	{
-//		console.log(event.target);
-//	});
-	
-	
+		},
+		//beforeShowDay: function(date) 
+		//{
+		//	return false;
+		//}
+	});	
 });
 
 /* ]]> */
