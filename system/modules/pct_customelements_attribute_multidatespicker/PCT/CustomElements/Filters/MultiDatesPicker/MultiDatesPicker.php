@@ -58,7 +58,9 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 	 */	
 	public function getQueryOptionCallback()
 	{
-		$blnAutoMode = true;
+		$arrSettings = $GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS'][$objFilter->type]['settings'];
+		
+		$blnAutoMode = $arrSettings['autoMode'];
 		$arrOptions = array();
 		
 		// if user filters manually
@@ -97,7 +99,7 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 		}
 		else
 		{
-			$strFormat = $GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS'][$objFilter->type]['dateFormat'] ?: 'd-m-Y';
+			$strFormat = $arrSettings['dateFormat'] ?: 'd-m-Y';
 			
 			// create Date objects
 			// @var object \Date
@@ -105,7 +107,7 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 			$objDateStop = new \Date($arrRange[1],$strFormat);
 			
 			$intStart = $objDateStart->__get('dayBegin');
-			$intStop = $objDateStop->__get('dayEnd');
+			$intStop = $objDateStop->__get('dayBegin');
 		
 			// use default value as date start if not set
 			if(strlen($arrRange[0]) < 1 && strlen($this->get('defaultValue')) > 0)
@@ -115,7 +117,7 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 		
 			if(strlen($arrRange[1]) < 1)
 			{
-				$strFuture = $GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS'][$objFilter->type]['futureDate'] ?: '+3 month';
+				$strFuture = $arrSettings['futureDate'] ?: '+3 month';
 				$intStop = date('U', strtotime($strFuture,$objDateStart->__get('tstamp')));
 			}
 			
@@ -126,20 +128,23 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 			// @var object DatePeriod
 			$objPeriod = new \DatePeriod($objDateTimeStart, new \DateInterval('P1D'), $objDateTimeStop);
 			
-			// collect all days in the period as timestamps
-			$arrDates = array();
+			// build single LIKE statements because mysql cannot search in comma-seperated string values
+			$arrQuery = array();
 			foreach($objPeriod as $date)
 			{
 				$objDate = new \Date($date->format('U'));
-				$arrDates[] = $objDate->__get('dayBegin');
+				$arrQuery[] = $strTarget.($this->get('mode') == 'sub' ? ' NOT ' : '').' LIKE '."'".$objDate->__get('dayBegin')."%'";
 			}
 			
-			// build sql query array
-			$arrOptions = array
-			(
-				'column' => $strTarget,
-				'where'  => $strTarget.($this->get('mode') == 'sub' ? ' NOT ' : '').' IN ('.implode(',',$arrDates).')', 
-			);
+			if(count($arrQuery) > 0)
+			{
+				// build sql query array
+				$arrOptions = array
+				(
+					'column' => $strTarget,
+					'where'  => '('.implode(' OR ',$arrQuery).')',
+				);
+			}
 		}
 		
 		return $arrOptions;
