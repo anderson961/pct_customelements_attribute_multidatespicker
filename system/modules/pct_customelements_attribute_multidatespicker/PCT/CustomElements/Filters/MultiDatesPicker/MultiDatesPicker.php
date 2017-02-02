@@ -63,9 +63,9 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 		$blnAutoMode = $arrSettings['autoMode'];
 		$arrOptions = array();
 		
-		// if user filters manually
+		// if user filters manually and days are different
 		$arrRange = array();
-		if(count($this->getValue($this->getName().'_start')) > 0 || count($this->getValue($this->getName().'_stop')) > 0)
+		if(count($this->getValue($this->getName().'_start')) > 0 || count($this->getValue($this->getName().'_stop')) > 0 && ($this->getValue($this->getName().'_start') != $this->getValue($this->getName().'_stop')) )
 		{
 			$arrRange = array_filter(array_merge($this->getValue($this->getName().'_start'), $this->getValue($this->getName().'_stop')));
 			$blnAutoMode = false;
