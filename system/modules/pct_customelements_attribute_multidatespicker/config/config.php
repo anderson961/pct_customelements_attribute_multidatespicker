@@ -46,9 +46,13 @@ $GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS']['multidatespicker'] = array
 	'path' 				=> PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH,
 	'class'				=> 'PCT\CustomElements\Filters\MultiDatesPicker',
 	'icon'				=> 'fa fa-calendar',
-	'dateFormat'		=> 'd-m-Y', // date format in php
-	'js_dateFormat'		=> 'dd-mm-yy',	// date format the datepicker uses. It must match the php date format
-	'futureDate'		=> '+3 month' // added to start day when no end day is set
+	'settings'			=> array
+	(
+		'autoMode'			=> false, // if set to true the filter works without user input
+		'dateFormat'		=> 'd-m-Y', // date format in php
+		'js_dateFormat'		=> 'dd-mm-yy',	// date format the datepicker uses. It must match the php date format
+		'futureDate'		=> '+3 month' // added to start day when no end day is set
+	)
 );
 
 
