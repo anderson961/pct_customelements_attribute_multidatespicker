@@ -145,7 +145,7 @@ class MultiDatesPicker extends \PCT\CustomElements\Core\Attribute
 		
 		// pass couple more information to the widget that might become handy
 		$objWidget->attribute = $objAttribute;
-		$objWidget->attr_id = $arrFieldDef['attr_id'];
+		$objWidget->attr_id = $objAttribute->id;
 		
 		return $objWidget->parse();
 	}
@@ -160,9 +160,32 @@ class MultiDatesPicker extends \PCT\CustomElements\Core\Attribute
 	 * @param mixed
 	 * @return string
 	 */
-	public function parseWidgetCallback($objWidget,$strField,$arrFieldDef,$objDC)
+	public function parseWidgetCallback($objWidget,$strField,$arrFieldDef,$objDC,$varValue)
 	{
-		return $this->parseWidget($objDC,$objWidget->label);
+		// store unix timestamps
+		if(\Input::post('FORM_SUBMIT') == $objDC->table)
+		{
+			$varValue = $this->convertToUnix($varValue,$objDC);
+		}
+		else
+		{
+			$varValue = $this->convertToDate($varValue,$objDC);
+		}
+		
+		// get the class
+		$strClass = $GLOBALS['BE_FFL']['multidatespicker'];
+		
+		// get the widget attributes
+		$arrAttributes = $strClass::getAttributesFromDca($arrFieldDef,$objDC->field,$varValue,$objDC->field,$objDC->table,$objDC);
+	
+		// @var object 
+		$objWidget = new $strClass($arrAttributes);
+		
+		// pass couple more information to the widget that might become handy
+		$objWidget->attribute = $objDC->objAttribute;
+		$objWidget->attr_id =  $objDC->objAttribute->id;
+		
+		return $objWidget->parse();
 	}
 	
 
@@ -200,10 +223,20 @@ class MultiDatesPicker extends \PCT\CustomElements\Core\Attribute
 		$strFormat = 'm/d/Y';;
 		$arrDates = array();
 		$arrFormattedValues = array();
-		foreach($varValue as $value)
+		foreach($varValue as $v)
 		{
-			$arrDates[] = \System::parseDate($strFormat,$value);
-			$arrFormattedValues[] = \System::parseDate(\Config::get('dateFormat'),$value);
+			$value = $v;
+			$value_formatted = $v;
+			
+			// convert unix timestamps to date format
+			if(is_int((int)$v) && is_numeric($v))
+			{
+				$value = \System::parseDate($strFormat,$v);
+				$value_formatted = \System::parseDate(\Config::get('dateFormat'),$v);
+			}
+			
+			$arrDates[] = $value;
+			$arrFormattedValues[] = $value_formatted;
 		}
 		
 		$arrDates = array_filter($arrDates);
@@ -212,7 +245,7 @@ class MultiDatesPicker extends \PCT\CustomElements\Core\Attribute
 		$objTemplate->dates = $arrDates;
 		$objTemplate->formatted_value = implode(',',$arrFormattedValues);
 		$objTemplate->hasDatesSelected = empty($arrDates) ? false : true;
-				
+		
 		return $objTemplate->parse();
 	}
 	
