@@ -68,8 +68,8 @@ class Widget extends \Widget
 		$objTemplate = new \BackendTemplate( $this->strTemplate );
 		$objTemplate->name = $this->name;
 		
-		$objTemplate->class = '';
-		$objTemplate->cssID = 'multirangepicker_'.$this->id;
+		$objTemplate->class = 'multidatespicker';
+		$objTemplate->cssID = 'multidatespicker_'.$this->id;
 		
 		// values
 		$varValues = $this->value;
