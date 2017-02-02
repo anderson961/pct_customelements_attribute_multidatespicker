@@ -11,7 +11,7 @@ $GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/mul
 $GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/css/styles.css';
 ?>
 
-<div id="<?= $this->cssID; ?>" class="multirangepicker<?php if($this->class):?><?= $this->class; ?><?php endif; ?>">
+<div id="<?= $this->cssID; ?>" class="multidatespicker<?php if($this->class):?> <?= $this->class; ?><?php endif; ?>">
 <input type="hidden" name="<?= $this->name; ?>" id="ctrl_<?= $this->cssID; ?>" value="<?= $this->value; ?>">	
 </div>
 
