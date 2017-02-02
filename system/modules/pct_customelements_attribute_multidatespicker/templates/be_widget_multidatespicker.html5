@@ -6,8 +6,11 @@ $GLOBALS['TL_JAVASCRIPT'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets
 $GLOBALS['TL_JAVASCRIPT'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/multidatespicker/jquery-ui.multidatespicker.js';
 // css
 $GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/multidatespicker/css/jquery-ui.css';
-$GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/multidatespicker/css/jquery-ui.structure.css';
-$GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/multidatespicker/css/jquery-ui.theme.css';
+// use local only
+#$GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/multidatespicker/css/jquery-ui.structure.css';
+#$GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/multidatespicker/css/jquery-ui.theme.css';
+#$GLOBALS['TL_CSS'][] = '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css';	
+// our styles
 $GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/css/styles.css';
 ?>
 
