@@ -40,6 +40,7 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'be_widget_multidatespicker'		=> 'system/modules/pct_customelements_attribute_multidatespicker/templates',
-	'customcatalog_filter_datesrange'	=> 'system/modules/pct_customelements_attribute_multidatespicker/templates',
+	'be_widget_multidatespicker'			=> 'system/modules/pct_customelements_attribute_multidatespicker/templates',
+	'customcatalog_filter_datesrange'		=> 'system/modules/pct_customelements_attribute_multidatespicker/templates',
+	'customelement_attr_multidatespicker'	=> 'system/modules/pct_customelements_attribute_multidatespicker/templates'
 ));

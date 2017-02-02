@@ -1,0 +1,114 @@
+<?php
+/**
+ * Custom elements multidates attribute template
+ */
+
+// include jquery and jquer ui, multidatespicker
+global $objPage;
+if(!$objPage->hasJQuery)
+{
+	$GLOBALS['TL_JAVASCRIPT'][] = 'https://code.jquery.com/jquery-1.12.4.js';
+}
+$GLOBALS['TL_JAVASCRIPT'][] = 'https://code.jquery.com/ui/1.12.1/jquery-ui.js';
+$GLOBALS['TL_CSS'][] = '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css';	
+$GLOBALS['TL_JAVASCRIPT'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/multidatespicker/jquery-ui.multidatespicker.js';
+// css
+#$GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/multidatespicker/css/jquery-ui.css';
+#$GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/multidatespicker/css/jquery-ui.structure.css';
+#$GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/multidatespicker/css/jquery-ui.theme.css';
+// our styles
+$GLOBALS['TL_CSS'][] =  PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/css/styles.css';
+?>
+
+<?php if($this->value): ?>
+<div <?= $this->cssID; ?> <?php if($this->class): ?>class="<?php echo $this->class; ?>"<?php endif; ?>>
+
+<div id="<?= $this->selector; ?>" class="multidatespicker"></div>
+<input type="text" name="<?= $this->name; ?>" id="ctrl_<?= $this->cssID; ?>" value="<?= $this->formatted_value; ?>">	
+
+<script type='text/javascript'>
+/* <![CDATA[ */
+
+/**
+ * Initialize the MultiDatesPicker script
+ * http://multidatespickr.sourceforge.net/
+ * https://jqueryui.com/datepicker/
+ */
+jQuery(document).ready(function() 
+{
+	var arrDates = [];
+	<?php foreach($this->dates as $date): ?>
+	arrDates.push('<?= $date; ?>');
+	<?php endforeach; ?>
+	jQuery('#<?= $this->selector; ?>').multiDatesPicker(
+	{
+		<?php if($this->hasDatesSelected): ?>
+		addDates: arrDates,
+		<?php endif; ?>
+		numberOfMonths: [1,3], // rows, columns
+		yearRange: "2016:2025",
+		showButtonPanel: true,
+		//showOtherMonths: true,
+		//selectOtherMonths: true,
+		onSelect: function(strDate, objInstance) 
+		{
+			var elementClicked = null;
+			jQuery(this).find('[data-year="'+objInstance.selectedYear+'"][data-month="'+objInstance.selectedMonth+'"]').filter(function(index,element) 
+			{
+            	if(jQuery(element).find('a').text().trim() == objInstance.selectedDay)
+            	{
+	            	elementClicked = element;
+            	}
+            });
+			
+			if(elementClicked == null || elementClicked == undefined)
+			{
+				return false;
+			}
+			
+			var isSelected = jQuery(elementClicked).hasClass('ui-state-highlight');
+			var input = jQuery('input[name="<?= $this->name; ?>"]');
+			
+			var value = input.val();
+			if(value.length < 1)
+			{
+				value = [];
+			}
+			else
+			{
+				value = value.split(',');
+			}
+			
+			// add new date
+			if(value.indexOf(strDate) < 0 && isSelected)
+			{
+				value.push(strDate);
+			}
+			// remove date
+			else
+			{
+				value.splice(value.indexOf(strDate), 1);
+			}
+			
+			input.val(value);
+		},
+		// disable selected dates
+		<?php if($this->hasDatesSelected): ?>
+		beforeShowDay: function(strDate) 
+		{
+			// restricted date found
+			if(arrDates.indexOf( jQuery.datepicker.formatDate('mm/dd/yy', strDate) ) >= 0)
+			{
+				return [false];
+			}
+			return [true];
+		}
+		<?php endif; ?>
+	});	
+});
+
+/* ]]> */
+</script>	
+	
+</div>
+<?php endif; ?>

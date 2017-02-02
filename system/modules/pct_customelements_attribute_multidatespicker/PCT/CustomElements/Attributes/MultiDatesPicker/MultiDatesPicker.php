@@ -179,11 +179,45 @@ class MultiDatesPicker extends \PCT\CustomElements\Core\Attribute
 	 */
 	public function renderCallback($strField,$varValue,$objTemplate,$objAttribute)
 	{
+		$objTemplate->name = $strField;
+		$objTemplate->selector = 'multidatespicker_'.$objAttribute->get('id');
+		
+		$arrCssID = deserialize($objAttribute->get('cssID')) ?: array();
+		if(strlen($arrCssID[0]) > 0)
+		{
+			$objTemplate->selector = $arrCssID[0]; 
+		}
+		
+		// values
+		if(!is_array($varValue))
+		{
+			$varValue = array_filter(explode(',', $varValue));
+		}
+		
+		$objTemplate->raw_values = $varValue;
+		$objTemplate->value = implode(',',$varValue);
+		
+		$strFormat = 'm/d/Y';;
+		$arrDates = array();
+		$arrFormattedValues = array();
+		foreach($varValue as $value)
+		{
+			$arrDates[] = \System::parseDate($strFormat,$value);
+			$arrFormattedValues[] = \System::parseDate(\Config::get('dateFormat'),$value);
+		}
+		
+		$arrDates = array_filter($arrDates);
+		$arrFormattedValues = array_filter($arrFormattedValues);
+		
+		$objTemplate->dates = $arrDates;
+		$objTemplate->formatted_value = implode(',',$arrFormattedValues);
+		$objTemplate->hasDatesSelected = empty($arrDates) ? false : true;
+				
 		return $objTemplate->parse();
 	}
 	
 	
-		/**
+	/**
 	 * Generate wildcard value
 	 * @param mixed
 	 * @param object	DatabaseResult
