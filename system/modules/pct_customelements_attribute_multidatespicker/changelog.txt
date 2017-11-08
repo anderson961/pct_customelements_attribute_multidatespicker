@@ -1,1 +1,5 @@
+### 1.1.0
+Update: Rebuild filter method to improve performance for long time ranges
+Update: Store values sorted
+
 ### 1.0.0
