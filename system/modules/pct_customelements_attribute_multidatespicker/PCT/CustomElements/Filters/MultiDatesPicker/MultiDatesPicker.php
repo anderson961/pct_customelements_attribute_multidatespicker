@@ -63,12 +63,16 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 		$blnAutoMode = $arrSettings['autoMode'];
 		$arrOptions = array();
 		
+		$strPublished = ($GLOBALS['PCT_CUSTOMCATALOG']['FRONTEND']['FILTER']['publishedOnly'] ? $this->getCustomCatalog()->getPublishedField() : '');
+		$strField = $this->getFilterTarget();
+		
 		// if user filters manually and days are different
 		$arrRange = array();
 		if(count($this->getValue($this->getName().'_start')) > 0 || count($this->getValue($this->getName().'_stop')) > 0 && ($this->getValue($this->getName().'_start') != $this->getValue($this->getName().'_stop')) )
 		{
 			$arrRange = array_filter(array_merge($this->getValue($this->getName().'_start'), $this->getValue($this->getName().'_stop')));
 			$blnAutoMode = false;
+			$strField = $this->getName();
 		}
 		
 		if($blnAutoMode === true)
@@ -99,6 +103,9 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 		}
 		else
 		{
+			// @var object
+			$objCache = new \PCT\CustomElements\Plugins\CustomCatalog\Core\Cache();
+			
 			$strFormat = $arrSettings['dateFormat'] ?: 'd-m-Y';
 			
 			// create Date objects
@@ -133,18 +140,30 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 			foreach($objPeriod as $date)
 			{
 				$objDate = new \Date($date->format('U'));
-				$arrQuery[] = $strTarget.($this->get('mode') == 'sub' ? ' NOT ' : '').' LIKE '."'".$objDate->__get('dayBegin')."%'";
+				$arrQuery[] = $strField.($this->get('mode') == 'sub' ? ' NOT ' : '').' LIKE '."'%".$objDate->__get('dayBegin')."%'";
 			}
 			
-			if(count($arrQuery) > 0)
+			// look up from cache
+			$objRows = $objCache::getDatabaseResult('MultiDatesPicker::findAll'.(strlen($strPublished) > 0 ? 'Published' : ''),$strField);
+			if($objRows === null)
 			{
-				// build sql query array
-				$arrOptions = array
-				(
-					'column' => $strTarget,
-					'where'  => '('.implode(' OR ',$arrQuery).')',
-				);
+				$objRows = \Database::getInstance()->prepare("SELECT id FROM ".$this->getTable()." WHERE ".$strField." IS NOT NULL AND (".implode(' OR ',$arrQuery).")" .(strlen($strPublished) > 0 ? " AND ".$strPublished."=1" : ""))->execute();
+				// add to cache
+				$objCache::addDatabaseResult('MultiDatesPicker::findAll'.(strlen($strPublished) > 0 ? 'Published' : ''),$strField,$objRows);
 			}
+			
+			if($objRows->numRows < 1)
+			{
+				return array();
+			}
+			
+			$arrOptions = array
+			(
+				'column' 	=> 'ID',
+				'operation'	=> 'IN',
+				'value'		=> $objRows->fetchEach('id')
+			);
+			
 		}
 		
 		return $arrOptions;
