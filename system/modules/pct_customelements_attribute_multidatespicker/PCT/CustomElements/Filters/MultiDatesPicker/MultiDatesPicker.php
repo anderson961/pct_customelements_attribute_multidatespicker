@@ -61,6 +61,9 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 		$arrSettings = $GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS'][$objFilter->type]['settings'];
 		
 		$blnAutoMode = $arrSettings['autoMode'];
+		$strPublished = ($GLOBALS['PCT_CUSTOMCATALOG']['FRONTEND']['FILTER']['publishedOnly'] ? $this->getCustomCatalog()->getPublishedField() : '');
+		$strTarget = $this->getFilterTarget();
+		
 		$arrOptions = array();
 		
 		// if user filters manually and days are different
@@ -69,9 +72,8 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 		{
 			$arrRange = array_filter(array_merge($this->getValue($this->getName().'_start'), $this->getValue($this->getName().'_stop')));
 			$blnAutoMode = false;
+			$strTarget = $this->getName();
 		}
-		
-		$strTarget = $this->getFilterTarget();
 		
 		if($blnAutoMode === true)
 		{
