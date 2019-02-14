@@ -1,5 +1,9 @@
 ### 1.1.0
+Fixed: Missing field name in sql query
 Update: Rebuild filter method to improve performance for long time ranges
 Update: Store values sorted
+Update: Added Caching for query
+Update: PHP 7.2 ready
+Update: Contao 4.4 ready 
 
 ### 1.0.0
