@@ -310,6 +310,9 @@ class MultiDatesPicker extends \PCT\CustomElements\Core\Attribute
 			$arrReturn[] = $value;
 		}
 		
+		// sort values
+		sort($arrReturn);
+		
 		return $arrReturn;
 	}
 	
@@ -353,6 +356,9 @@ class MultiDatesPicker extends \PCT\CustomElements\Core\Attribute
 			}
 			$arrReturn[] = $value;
 		}
+		
+		// sort values
+		sort($arrReturn);
 		
 		return $arrReturn;
 	}	

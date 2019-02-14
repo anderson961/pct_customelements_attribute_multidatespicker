@@ -16,13 +16,13 @@
 /**
  * Constants
  */
-define(PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH, 'system/modules/pct_customelements_attribute_multidatespicker');
+define('PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH', 'system/modules/pct_customelements_attribute_multidatespicker');
 
 
 /**
  * Globals
  */
-$GLOBALS['PCT_CUSTOMELEMENTS_ATTRIBUTES_MULTIDATESPICKER']['script'] = PCT_CUSTOMELEMENTS_MULTIRANGEPICKER_PATH.'/assets/js/multidatespicker/jquery-ui.multidatespicker.js'.
+$GLOBALS['PCT_CUSTOMELEMENTS_ATTRIBUTES_MULTIDATESPICKER']['script'] = PCT_CUSTOMELEMENTS_MULTIDATESPICKER_PATH.'/assets/js/multidatespicker/jquery-ui.multidatespicker.js'.
 
 
 /**
