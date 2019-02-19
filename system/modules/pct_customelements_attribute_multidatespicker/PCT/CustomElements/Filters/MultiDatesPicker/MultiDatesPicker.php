@@ -139,17 +139,21 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 			foreach($objPeriod as $date)
 			{
 				$objDate = new \Date($date->format('U'));
-				$arrQuery[] = $strTarget.($this->get('mode') == 'sub' ? ' NOT ' : '').' LIKE '."'%".$objDate->__get('dayBegin')."%'";
+				$arrQuery[] = $strTarget.' LIKE '."'%".$objDate->__get('dayBegin')."%'";
 			}
 			
 			// look up from cache
 			$objRows = $objCache::getDatabaseResult('MultiDatesPicker::findAll'.(strlen($strPublished) > 0 ? 'Published' : ''),$strTarget);
 			if($objRows === null)
 			{
-				$objRows = \Database::getInstance()->prepare("SELECT id FROM ".$this->getTable()." WHERE ".$strTarget." IS NOT NULL AND (".implode(' OR ',$arrQuery).")" .(strlen($strPublished) > 0 ? " AND ".$strPublished."=1" : ""))->execute();
+				$combiner = $this->get('mode') == 'sub' ? 'AND' : 'OR'; 
+				
+				$objRows = \Database::getInstance()->prepare("SELECT id FROM ".$this->getTable()." WHERE ".$strTarget." IS NOT NULL AND (".implode(' '.$combiner.' ',$arrQuery).")" .(strlen($strPublished) > 0 ? " AND ".$strPublished."=1" : ""))->execute();
 				// add to cache
 				$objCache::addDatabaseResult('MultiDatesPicker::findAll'.(strlen($strPublished) > 0 ? 'Published' : ''),$strTarget,$objRows);
 			}
+			
+			\Debug::log($objRows->__get('query'));
 			
 			if($objRows->numRows < 1)
 			{
