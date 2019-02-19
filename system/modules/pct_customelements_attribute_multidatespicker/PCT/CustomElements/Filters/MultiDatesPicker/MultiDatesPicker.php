@@ -153,8 +153,6 @@ class MultiDatesPicker extends \PCT\CustomElements\Filter
 				$objCache::addDatabaseResult('MultiDatesPicker::findAll'.(strlen($strPublished) > 0 ? 'Published' : ''),$strTarget,$objRows);
 			}
 			
-			\Debug::log($objRows->__get('query'));
-			
 			if($objRows->numRows < 1)
 			{
 				return array();
